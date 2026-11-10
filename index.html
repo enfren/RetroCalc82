@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RetroCalc-82</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a2e;
+    font-family: 'VT323', monospace;
+  }
+
+  .calculator {
+    background: #2d2d2d;
+    border-radius: 12px;
+    padding: 24px 20px 20px;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,.6),
+      inset 0 1px 0 rgba(255,255,255,.08),
+      inset 0 -2px 4px rgba(0,0,0,.4);
+    width: 320px;
+    position: relative;
+  }
+
+  .brand {
+    text-align: center;
+    color: #888;
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 14px;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  }
+
+  .brand span { color: #ff6b35; }
+
+  .display {
+    background: #1a3a1a;
+    border-radius: 4px;
+    border: 3px solid #111;
+    box-shadow:
+      inset 0 4px 12px rgba(0,0,0,.7),
+      0 1px 0 rgba(255,255,255,.05);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    min-height: 64px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+
+  .display .expr {
+    font-size: 16px;
+    color: #4a7a4a;
+    min-height: 20px;
+    word-break: break-all;
+    text-align: right;
+  }
+
+  .display .value {
+    font-size: 42px;
+    color: #7fff7f;
+    text-shadow: 0 0 8px rgba(127,255,127,.4);
+    word-break: break-all;
+    text-align: right;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .btn {
+    height: 52px;
+    border: none;
+    border-radius: 6px;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform .05s, box-shadow .05s;
+    position: relative;
+  }
+
+  .btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 rgba(0,0,0,0) !important;
+  }
+
+  .btn-num {
+    background: #444;
+    color: #eee;
+    box-shadow: 0 4px 0 #222, inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .btn-num:active { box-shadow: 0 1px 0 #222, inset 0 1px 0 rgba(255,255,255,.1); }
+
+  .btn-op {
+    background: #ff6b35;
+    color: #fff;
+    box-shadow: 0 4px 0 #b84a1a, inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .btn-op:active { box-shadow: 0 1px 0 #b84a1a, inset 0 1px 0 rgba(255,255,255,.2); }
+
+  .btn-func {
+    background: #555;
+    color: #ccc;
+    box-shadow: 0 4px 0 #333, inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .btn-func:active { box-shadow: 0 1px 0 #333, inset 0 1px 0 rgba(255,255,255,.1); }
+
+  .btn-eq {
+    background: #3a7a3a;
+    color: #fff;
+    box-shadow: 0 4px 0 #1f4a1f, inset 0 1px 0 rgba(255,255,255,.15);
+  }
+  .btn-eq:active { box-shadow: 0 1px 0 #1f4a1f, inset 0 1px 0 rgba(255,255,255,.15); }
+
+  .btn-zero { grid-column: span 2; }
+
+  .solar {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    width: 48px;
+    height: 14px;
+    background: linear-gradient(135deg, #1a2a4a, #2a3a5a, #1a2a4a);
+    border-radius: 2px;
+    border: 1px solid #111;
+  }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="solar"></div>
+  <div class="brand">RETRO<span>CALC</span>-82</div>
+  <div class="display">
+    <div class="expr" id="expr"></div>
+    <div class="value" id="value">0</div>
+  </div>
+  <div class="buttons">
+    <button class="btn btn-func" data-action="clear">AC</button>
+    <button class="btn btn-func" data-action="negate">±</button>
+    <button class="btn btn-func" data-action="percent">%</button>
+    <button class="btn btn-op" data-op="/">÷</button>
+
+    <button class="btn btn-num" data-num="7">7</button>
+    <button class="btn btn-num" data-num="8">8</button>
+    <button class="btn btn-num" data-num="9">9</button>
+    <button class="btn btn-op" data-op="*">×</button>
+
+    <button class="btn btn-num" data-num="4">4</button>
+    <button class="btn btn-num" data-num="5">5</button>
+    <button class="btn btn-num" data-num="6">6</button>
+    <button class="btn btn-op" data-op="-">−</button>
+
+    <button class="btn btn-num" data-num="1">1</button>
+    <button class="btn btn-num" data-num="2">2</button>
+    <button class="btn btn-num" data-num="3">3</button>
+    <button class="btn btn-op" data-op="+">+</button>
+
+    <button class="btn btn-num btn-zero" data-num="0">0</button>
+    <button class="btn btn-num" data-num=".">.</button>
+    <button class="btn btn-eq" data-action="equals">=</button>
+  </div>
+</div>
+
+<script>
+  const valueEl = document.getElementById('value');
+  const exprEl  = document.getElementById('expr');
+
+  let current = '0';
+  let previous = null;
+  let operator = null;
+  let justEvaluated = false;
+
+  function updateDisplay() {
+    valueEl.textContent = current;
+    exprEl.textContent = previous !== null ? `${previous} ${opSymbol(operator)}` : '';
+  }
+
+  function opSymbol(op) {
+    return { '+': '+', '-': '−', '*': '×', '/': '÷' }[op] || '';
+  }
+
+  function inputDigit(d) {
+    if (justEvaluated) { current = '0'; justEvaluated = false; }
+    if (d === '.') {
+      if (current.includes('.')) return;
+      current += '.';
+    } else {
+      current = current === '0' ? d : current + d;
+    }
+    updateDisplay();
+  }
+
+  function setOperator(op) {
+    if (previous !== null && operator && !justEvaluated) {
+      evaluate();
+    }
+    previous = parseFloat(current);
+    operator = op;
+    current = '0';
+    justEvaluated = false;
+    updateDisplay();
+  }
+
+  function evaluate() {
+    if (previous === null || !operator) return;
+    const a = previous;
+    const b = parseFloat(current);
+    let result;
+    switch (operator) {
+      case '+': result = a + b; break;
+      case '-': result = a - b; break;
+      case '*': result = a * b; break;
+      case '/': result = b === 0 ? 'Error' : a / b; break;
+    }
+    current = result === 'Error' ? 'Error' : String(parseFloat(result.toPrecision(12)));
+    previous = null;
+    operator = null;
+    justEvaluated = true;
+    updateDisplay();
+  }
+
+  function clear() {
+    current = '0'; previous = null; operator = null; justEvaluated = false;
+    updateDisplay();
+  }
+
+  function negate() {
+    if (current !== '0' && current !== 'Error') {
+      current = current.startsWith('-') ? current.slice(1) : '-' + current;
+      updateDisplay();
+    }
+  }
+
+  function percent() {
+    current = String(parseFloat(current) / 100);
+    updateDisplay();
+  }
+
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.num) inputDigit(btn.dataset.num);
+      else if (btn.dataset.op) setOperator(btn.dataset.op);
+      else if (btn.dataset.action === 'equals') evaluate();
+      else if (btn.dataset.action === 'clear') clear();
+      else if (btn.dataset.action === 'negate') negate();
+      else if (btn.dataset.action === 'percent') percent();
+    });
+  });
+
+  // Keyboard support
+  document.addEventListener('keydown', e => {
+    if (/^[0-9.]$/.test(e.key)) inputDigit(e.key);
+    else if (['+','-','*','/'].includes(e.key)) setOperator(e.key);
+    else if (e.key === 'Enter' || e.key === '=') evaluate();
+    else if (e.key === 'Escape') clear();
+    else if (e.key === '%') percent();
+  });
+</script>
+</body>
+</html>   
